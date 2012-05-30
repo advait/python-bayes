@@ -17,7 +17,7 @@ class Feature:
   This feature base class only tests for the presence of a substring in s.
   """
   def __init__(self, base):
-    self.base = base
+    self.base = sanitize(base)
     # Counts is a 2-level dict that keeps a count of our training strings.
     # The first level index is the class_number.
     # The second level index is a bool indicating the presence of this feature.
@@ -140,8 +140,17 @@ def main():
   classifier = Classifier()
   # Add features for all uppercase characters
   for c in ascii_uppercase:
-    f = Feature(c)
-    classifier.addFeature(f)
+    classifier.addFeature(Feature(c))
+  # Add features for common english digrams
+  digrams = ["th", "he", "in", "en", "nt", "re", "er", "an",
+      "ti", "es", "on", "at"]
+  for digram in digrams:
+    classifier.addFeature(Feature(digram))
+  # Add features for common english trigrams
+  trigrams = ["the", "and", "tha", "ent", "ing", "ion", "tio", "for", "nde",
+      "has", "nce", "edt", "tis", "oft", "sth", "men"]
+  for trigram in trigrams:
+    classifier.addFeature(Feature(trigram))
 
   # Train!
   with open(trainFile1, 'r') as f:
