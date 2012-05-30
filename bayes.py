@@ -163,7 +163,9 @@ def main():
   for trigram in trigrams:
     classifier.addFeature(Feature(trigram))
   # Add some regex features
-  classifier.addFeature(RegexFeature(r"^.*ville$"))
+  regexes = [r"^.*ville$", r"^.*sk$"]
+  for r in regexes:
+    classifier.addFeature(RegexFeature(r))
 
   # Train!
   with open(trainFile1, 'r') as f:
