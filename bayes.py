@@ -4,13 +4,14 @@ Author: Advait Shinde (advait.shinde@gmail.com)
 """
 
 from __future__ import division  # Always use float division
+import re
 import sys
 from collections import defaultdict
 from operator import mul
 from string import ascii_uppercase
 
 
-class Feature:
+class Feature(object):
   """A Feature represents a boolean assessment of an input string.
   The judge(s) method determines whether this feature is present in s.
 
@@ -56,7 +57,17 @@ class Feature:
       (self.counts[class_number][False] + self.counts[class_number][True]))
 
 
-class Classifier:
+class RegexFeature(Feature):
+  """Regex-based Features."""
+  def __init__(self, r):
+    self.r = re.compile(r, re.IGNORECASE)
+    super(RegexFeature, self).__init__(r)
+
+  def judge(self, target):
+    return (bool)(self.r.match(target))
+
+
+class Classifier(object):
   """Naive Bayes Classifer.
 
   Useful methods:
@@ -151,6 +162,8 @@ def main():
       "has", "nce", "edt", "tis", "oft", "sth", "men"]
   for trigram in trigrams:
     classifier.addFeature(Feature(trigram))
+  # Add some regex features
+  classifier.addFeature(RegexFeature(r"^.*ville$"))
 
   # Train!
   with open(trainFile1, 'r') as f:
