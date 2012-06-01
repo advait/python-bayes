@@ -162,9 +162,15 @@ def main():
       "has", "nce", "edt", "tis", "oft", "sth", "men"]
   for trigram in trigrams:
     classifier.addFeature(Feature(trigram))
-  # Add some regex features
-  regexes = [r"^.*ville$", r"^.*sk$"]
-  for r in regexes:
+  # Add some prefix and suffix regexes
+  prefixes = [r"^anti.*$", r"^de.*$", r"^dis.*$", r"^en.*$", r"^em.*$",
+      r"^fore.*$", r"^in.*$",  r"^im.*$", r"^inter.*$", r"^mis.*$",
+      r"^non.*$", r"^over.*$",  r"^pre.*$", r"^re.*$", r"^semi.*$",
+      r"^sub.*$", r"^super.*$",  r"^trans.*$", r"^un.*$", r"^under.*$", ]
+  suffixes = [r"^.*ville$", r"^.*sk$", r"^.*able$", r"^.*en$", r"^.*er$",
+      r"^.*est$", r"^.*ful$",  r"^.*ing$", r"^.*ion$", r"^.*ty$", r"^.*ive$",
+      r"^.*less$", r"^.*ly$",  r"^.*ment$", r"^.*ness$", r"^.*ous$", r"^.*es$"]
+  for r in (prefixes + suffixes):
     classifier.addFeature(RegexFeature(r))
 
   # Train!
@@ -180,21 +186,25 @@ def main():
   with open(testFile1, 'r') as f:
     actual_class_number = 0
     for line in f:
+      if not line.strip():
+        continue
       target = sanitize(line)
       probability = classifier.test(target, 0)
       predicted_class_number = (int)(probability <= 0.5)
-      results.append((target, actual_class_number, predicted_class_number,
+      results.append([target, actual_class_number, predicted_class_number,
           probability,
-          actual_class_number == predicted_class_number))
+          actual_class_number == predicted_class_number])
   with open(testFile2, 'r') as f:
     actual_class_number = 1
     for line in f:
+      if not line.strip():
+        continue
       target = sanitize(line)
       probability = classifier.test(target, 0)
       predicted_class_number = (int)(probability <= 0.5)
-      results.append((target, actual_class_number, predicted_class_number,
+      results.append([target, actual_class_number, predicted_class_number,
           probability,
-          actual_class_number == predicted_class_number))
+          actual_class_number == predicted_class_number])
 
   # Print results
   print ""
@@ -203,7 +213,7 @@ def main():
   print ""
   for r in results:
     if len(r[0]) >= 40:
-      r[0] = r[0][:36] + "... "
+      r[0] = r[0][:37] + "... "
     sys.stdout.write(r[0])
     sys.stdout.write(' ' * (41 - len(r[0])))  # Print spaces
     sys.stdout.write("{:d}".format(1 - r[1]))
@@ -224,7 +234,8 @@ def main():
   accuracy = n_correct / n_results
   error = sum([((1 - r[1]) - r[3]) ** 2 for r in results]) / n_results
   print ""
-  print "Summary of {:d} test cases, {:d} correct; accuracy = {:.2f}".format(n_results, n_correct, accuracy)
+  print "Summary of {:d} test cases, {:d} correct; accuracy = {:.2f}".format(
+      n_results, n_correct, accuracy)
   print "Mean squared error: {:.6f}".format(error)
 
 
