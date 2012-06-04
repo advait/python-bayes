@@ -149,27 +149,21 @@ def main():
 
   # Populate Classifier
   classifier = Classifier()
-  # Add features for all uppercase characters
-  for c in ascii_uppercase:
+  digrams = ["th", "he", "in", "en", "nt", "re", "er", "an", "ti", "on", "at"]
+  trigrams = ["tha", "ent", "tio", "nde", "nce", "edt", "tis", "sth", "men"]
+  for c in (ascii_uppercase + digrams + trigrams):
+    # Add features for single letters, digrams, and trigrams
     classifier.addFeature(Feature(c))
-  # Add features for common english digrams
-  digrams = ["th", "he", "in", "en", "nt", "re", "er", "an",
-      "ti", "es", "on", "at"]
-  for digram in digrams:
-    classifier.addFeature(Feature(digram))
-  # Add features for common english trigrams
-  trigrams = ["the", "and", "tha", "ent", "ing", "ion", "tio", "for", "nde",
-      "has", "nce", "edt", "tis", "oft", "sth", "men"]
-  for trigram in trigrams:
-    classifier.addFeature(Feature(trigram))
   # Add some prefix and suffix regexes
   prefixes = [r"^anti.*$", r"^de.*$", r"^dis.*$", r"^en.*$", r"^em.*$",
       r"^fore.*$", r"^in.*$",  r"^im.*$", r"^inter.*$", r"^mis.*$",
       r"^non.*$", r"^over.*$",  r"^pre.*$", r"^re.*$", r"^semi.*$",
-      r"^sub.*$", r"^super.*$",  r"^trans.*$", r"^un.*$", r"^under.*$", ]
+      r"^sub.*$", r"^super.*$",  r"^trans.*$", r"^un.*$", r"^under.*$",
+      r"^san.*$"]
   suffixes = [r"^.*ville$", r"^.*sk$", r"^.*able$", r"^.*en$", r"^.*er$",
       r"^.*est$", r"^.*ful$",  r"^.*ing$", r"^.*ion$", r"^.*ty$", r"^.*ive$",
-      r"^.*less$", r"^.*ly$",  r"^.*ment$", r"^.*ness$", r"^.*ous$", r"^.*es$"]
+      r"^.*less$", r"^.*ly$",  r"^.*ment$", r"^.*ness$", r"^.*ous$", r"^.*es$",
+      r"^.*port$", r"^.*city$", r"^.*ss$"]
   for r in (prefixes + suffixes):
     classifier.addFeature(RegexFeature(r))
 
